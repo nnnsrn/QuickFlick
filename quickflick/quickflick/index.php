@@ -152,7 +152,6 @@ include 'db.php';
           while ($row = $result->fetch_assoc()) {
             echo "<div class='movie-card'>";
         
-            // 🔽 Poster logic: use fallback if NULL or empty
             $posterSrc = isset($row['poster']) && !empty($row['poster']) 
               ? htmlspecialchars($row['poster']) 
               : 'https://via.placeholder.com/300x450?text=No+Image';
