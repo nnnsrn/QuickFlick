@@ -1,0 +1,167 @@
+<?php
+include 'db.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  $title = $conn->real_escape_string($_POST['title']);
+  $release_date = $_POST['release_date'];
+  $votes_avg = floatval($_POST['votes_avg']);
+  $votes_count = intval($_POST['votes_count']);
+
+  $sql = "INSERT INTO movie (title, budget, release_date, revenue, runtime, status, votes_avg, votes_count, poster) 
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("sisiiidis", $title, $budget, $release_date, $revenue, $runtime, $status, $votes_avg, $votes_count, $posterPath);
+
+  if ($stmt->execute()) {
+    header("Location: index.php");
+    exit();
+  } else {
+    echo "Error: " . $stmt->error;
+  }
+
+}
+
+$posterPath = null;
+
+if (isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK) {
+  $fileTmpPath = $_FILES['poster']['tmp_name'];
+  $fileName = basename($_FILES['poster']['name']);
+  $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+  $allowedExtensions = ['jpg', 'jpeg', 'png'];
+  if (in_array($fileExtension, $allowedExtensions)) {
+    $newFileName = uniqid('poster_', true) . '.' . $fileExtension;
+    $uploadDir = 'uploads/';
+    $destPath = $uploadDir . $newFileName;
+
+    if (!file_exists($uploadDir)) {
+      mkdir($uploadDir, 0777, true);
+    }
+
+    move_uploaded_file($fileTmpPath, $destPath);
+    $posterPath = $destPath;
+  } else {
+    echo "Invalid file type. Only JPG and PNG are allowed.";
+    exit;
+  }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Movie - QuickFlick</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+    }
+    header {
+      background-color: #343a40;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 26px;
+      color: white;
+    }
+    nav a {
+      color: white;
+      margin-left: 15px;
+      text-decoration: none;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      padding: 40px 20px;
+    }
+    form {
+      max-width: 500px;
+      margin: auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    form h2 {
+      margin-bottom: 20px;
+      font-size: 24px;
+      text-align: center;
+      color: #343a40;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
+    input[type="text"],
+    input[type="date"],
+    input[type="number"],
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      margin-top: 25px;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎬 QuickFlick</h1>
+    <nav>
+      <a href="index.php">Home</a>
+      <a href="add.php">Add Movie</a>
+      <a href="movies.php">View Movies</a>
+    </nav>
+  </header>
+
+  <main>
+    <form action="add.php" method="post" enctype="multipart/form-data">
+      <h2>Add a New Movie</h2>
+
+      <label for="title">Title</label>
+      <input type="text" name="title" id="title" required>
+
+      <label for="release_date">Release Date</label>
+      <input type="date" name="release_date" id="release_date" required>
+
+      <label for="votes_avg">Average Rating</label>
+      <input type="number" step="0.1" name="votes_avg" id="votes_avg" required>
+
+      <label for="votes_count">Vote Count</label>
+      <input type="number" name="votes_count" id="votes_count" required>
+
+      <label for="poster">Movie Poster (JPG or PNG)</label>
+      <input type="file" name="poster" id="poster" accept=".jpg,.jpeg,.png" required>
+
+      <button type="submit">Add Movie</button>
+    </form>
+  </main>
+</body>
+</html>
