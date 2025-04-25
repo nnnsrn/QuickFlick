@@ -1,26 +1,6 @@
 <?php
 include 'db.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $title = $conn->real_escape_string($_POST['title']);
-  $release_date = $_POST['release_date'];
-  $votes_avg = floatval($_POST['votes_avg']);
-  $votes_count = intval($_POST['votes_count']);
-
-  $sql = "INSERT INTO movie (title, budget, release_date, revenue, runtime, status, votes_avg, votes_count, poster) 
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-  $stmt = $conn->prepare($sql);
-  $stmt->bind_param("sisiiidis", $title, $budget, $release_date, $revenue, $runtime, $status, $votes_avg, $votes_count, $posterPath);
-
-  if ($stmt->execute()) {
-    header("Location: index.php");
-    exit();
-  } else {
-    echo "Error: " . $stmt->error;
-  }
-
-}
-
 $posterPath = null;
 
 if (isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK) {
@@ -45,7 +25,31 @@ if (isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK) {
     exit;
   }
 }
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  $title = $conn->real_escape_string($_POST['title']);
+  $release_date = $_POST['release_date'];
+  $votes_avg = floatval($_POST['votes_avg']);
+  $votes_count = intval($_POST['votes_count']);
+  $budget = intval($_POST['budget']);
+  $revenue = intval($_POST['revenue']);
+  $runtime = intval($_POST['runtime']);
+  $status = $conn->real_escape_string($_POST['status']);
+
+  $sql = "INSERT INTO movie (title, budget, release_date, revenue, runtime, status, votes_avg, votes_count, poster) 
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("sisiiidis", $title, $budget, $release_date, $revenue, $runtime, $status, $votes_avg, $votes_count, $posterPath);
+
+  if ($stmt->execute()) {
+    header("Location: index.php");
+    exit();
+  } else {
+    echo "Error: " . $stmt->error;
+  }
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -160,8 +164,22 @@ if (isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK) {
       <label for="poster">Movie Poster (JPG or PNG)</label>
       <input type="file" name="poster" id="poster" accept=".jpg,.jpeg,.png" required>
 
+      <label for="budget">Budget</label>
+      <input type="number" name="budget" id="budget" required>
+
+      <label for="revenue">Revenue</label>
+      <input type="number" name="revenue" id="revenue" required>
+
+      <label for="runtime">Runtime (in minutes)</label>
+      <input type="number" name="runtime" id="runtime" required>
+
+      <label for="status">Status</label>
+      <input type="text" name="status" id="status" required>
+
       <button type="submit">Add Movie</button>
     </form>
   </main>
 </body>
 </html>
+
+
