@@ -140,7 +140,7 @@ include 'db.php';
         }
       } else {
         echo "<p>No movies found.</p>";
-      }
+      }            
 
       $conn->close();
       ?>
