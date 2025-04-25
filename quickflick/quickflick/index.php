@@ -152,6 +152,7 @@ include 'db.php';
           while ($row = $result->fetch_assoc()) {
             echo "<div class='movie-card'>";
         
+            // Poster logic: use fallback if NULL or empty
             $posterSrc = isset($row['poster']) && !empty($row['poster']) 
               ? htmlspecialchars($row['poster']) 
               : 'https://via.placeholder.com/300x450?text=No+Image';
@@ -160,16 +161,11 @@ include 'db.php';
             echo "<img src='" . $posterSrc . "' alt='Poster' style='width:100%; height:auto; border-radius:8px; margin-bottom:10px;'>";
             echo "<h3>" . htmlspecialchars($row['title']) . "</h3>";
             echo "</a>";
-        
             echo "<p><strong>Release:</strong> " . htmlspecialchars($row['release_date']) . "</p>";
             echo "<p><strong>Rating:</strong> " . number_format($row['votes_avg'], 1) . "</p>";
             echo "<p><strong>Votes:</strong> " . number_format($row['votes_count']) . "</p>";
-        
-            
             echo "<input type='hidden' name='id' value='" . $row['movie_id'] . "'>";
-            
             echo "</form>";
-        
             echo "</div>";
           }
         } else {
