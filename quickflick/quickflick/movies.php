@@ -119,9 +119,7 @@ include 'db.php';
           break;
       }
 
-      $sql = "SELECT m.movie_id, m.title, m.release_date, m.votes_avg, m.votes_count, m.poster
-              FROM movie m
-              ORDER BY $orderBy";
+      $sql = "SELECT * FROM movie m ORDER BY $orderBy";
 
       $result = $conn->query($sql);
 
