@@ -26,7 +26,7 @@ include 'db.php';
     header h1 {
       margin: 0;
       font-size: 26px;
-      color: white; /* 👈 ensures QuickFlick title stays white */
+      color: white; 
     }
 
     nav a {
