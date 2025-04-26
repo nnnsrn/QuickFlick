@@ -94,6 +94,13 @@ if (isset($_GET['id'])) {
     </nav>
   </header>
 
+  <?php if (isset($_GET['success']) && $_GET['success'] == 1): ?>
+    <div style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+      Thank you for submitting your rating! 🎉
+    </div>
+  <?php endif; ?>
+
+
   <main>
     <section class="movie-details">
       <h2><?php echo htmlspecialchars($movie['title']); ?></h2>
@@ -104,7 +111,34 @@ if (isset($_GET['id'])) {
       <p><strong>Status:</strong> <?php echo htmlspecialchars($movie['status']); ?></p>
       <p><strong>Average Rating:</strong> <?php echo htmlspecialchars($movie['votes_avg']); ?> / 10</p>
       <p><strong>Total Votes:</strong> <?php echo number_format($movie['votes_count']); ?></p>
+
+      <br><br>
+      <a href="movies.php" style="
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 20px;
+      ">Back to Movies</a>
+
     </section>
+
+    <hr style="margin: 40px 0;">
+
+    <section class="review-form">
+      <h3>Submit Your Rating ⭐</h3>
+      <form action="submit_review.php" method="POST">
+        <input type="hidden" name="movie_id" value="<?php echo $movie_id; ?>">
+    
+        <label for="rating">Your Rating (1–10):</label><br>
+        <input type="number" id="rating" name="rating" min="1" max="10" step="0.1" required style="margin-top: 8px; padding: 8px; width: 100px;"><br><br>
+    
+        <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Submit</button>
+      </form>
+    </section>
+
   </main>
 </body>
 </html>
