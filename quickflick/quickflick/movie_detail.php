@@ -15,6 +15,21 @@ if (isset($_GET['id'])) {
         echo "Movie not found!";
         exit();
     }
+
+    // Fetch genres
+    $genre_sql = "SELECT genre.genre_name
+                  FROM genre
+                  INNER JOIN movie_genre ON genre.genre_id = movie_genre.genre_id
+                  WHERE movie_genre.movie_id = $movie_id";
+
+    $genre_result = $conn->query($genre_sql);
+
+    $genres = [];
+    if ($genre_result->num_rows > 0) {
+        while ($row = $genre_result->fetch_assoc()) {
+            $genres[] = $row['genre_name'];
+        }
+    }
 } else {
     echo "No movie selected!";
     exit();
@@ -100,10 +115,12 @@ if (isset($_GET['id'])) {
     </div>
   <?php endif; ?>
 
-
   <main>
     <section class="movie-details">
       <h2><?php echo htmlspecialchars($movie['title']); ?></h2>
+      <?php if (!empty($genres)): ?>
+          <p><strong>Genres:</strong> <?php echo htmlspecialchars(implode(', ', $genres)); ?></p>
+      <?php endif; ?>
       <p><strong>Release Date:</strong> <?php echo htmlspecialchars($movie['release_date']); ?></p>
       <p><strong>Budget:</strong> $<?php echo number_format($movie['budget']); ?></p>
       <p><strong>Revenue:</strong> $<?php echo number_format($movie['revenue']); ?></p>
@@ -122,7 +139,6 @@ if (isset($_GET['id'])) {
         border-radius: 5px;
         margin-top: 20px;
       ">Back to Movies</a>
-
     </section>
 
     <hr style="margin: 40px 0;">
