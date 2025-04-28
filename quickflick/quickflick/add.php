@@ -175,6 +175,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
       <label for="status">Status</label>
       <input type="text" name="status" id="status" required>
+      
+      <label>Genres:</label><br>
+      <input type="checkbox" name="genres[]" value="1"> Action<br>
+      <input type="checkbox" name="genres[]" value="2"> Comedy<br>
+      <input type="checkbox" name="genres[]" value="3"> Drama<br>
+      <input type="checkbox" name="genres[]" value="4"> Adventure<br>
+      <input type="checkbox" name="genres[]" value="5"> Sci-Fi<br>
+      <input type="checkbox" name="genres[]" values="6"> Horror<br>
+      <input type="checkbox" name="genres[]" values="7"> Romance<br>
 
       <button type="submit">Add Movie</button>
     </form>
