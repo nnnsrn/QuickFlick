@@ -97,6 +97,15 @@ if (!$movie) {
 </header>
 
 <main>
+  <?php
+  if (isset($_GET['success']) && $_GET['success'] == 1) 
+  {
+      echo '<div style="background-color: #d4edda; color: #155724; padding: 10px; margin: 20px auto; max-width: 800px; border: 1px solid #c3e6cb; border-radius: 5px; text-align: center;">
+            Thank you for voting!
+            </div>';
+  }
+  ?>
+
   <div class="movie-detail">
     <div class="movie-poster">
       <?php if (!empty($movie['poster'])): ?>
@@ -120,6 +129,24 @@ if (!$movie) {
         <p><strong>Studio:</strong> <?php echo htmlspecialchars($movie['studio_name']); ?> (<?php echo htmlspecialchars($movie['studio_location']); ?>)</p>
       <?php endif; ?>
     </div>
+
+    <hr style="margin: 30px 0;">
+
+    <div style="text-align: center; margin-top: 20px;">
+      <h3>Rate this Movie</h3>
+      <form action="submit_review.php" method="POST" style="margin-top: 10px;">
+        <input type="hidden" name="movie_id" value="<?php echo $movie_id; ?>">
+        <select name="rating" required style="padding: 8px 12px; border-radius: 5px; border: 1px solid #ccc;">
+        <option value="">Select rating</option>
+        <?php for ($i = 1; $i <= 10; $i++): ?>
+          <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+        <?php endfor; ?>
+        </select>
+        <button type="submit" style="padding: 8px 15px; margin-left: 10px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">Submit
+        </button>
+      </form>
+    </div>
+
 
     <a href="movies.php" class="back-link">← Back to Movies</a>
   </div>
